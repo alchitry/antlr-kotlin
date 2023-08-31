@@ -132,7 +132,7 @@ open class ATNConfig {
 
         return (this.state.stateNumber == other.state.stateNumber
                 && this.alt == other.alt
-                && (this.context === other.context || this.context != null && this.context == other.context)
+                && (this.context === other.context || (this.context != null && this.context == other.context))
                 && this.semanticContext == other.semanticContext
                 && this.isPrecedenceFilterSuppressed == other.isPrecedenceFilterSuppressed)
     }
@@ -168,7 +168,7 @@ open class ATNConfig {
             buf.append(context!!.toString())
             buf.append("]")
         }
-        if (semanticContext != null && semanticContext !== SemanticContext.NONE) {
+        if (semanticContext != null && semanticContext != SemanticContext.NONE) {
             buf.append(",")
             buf.append(semanticContext)
         }

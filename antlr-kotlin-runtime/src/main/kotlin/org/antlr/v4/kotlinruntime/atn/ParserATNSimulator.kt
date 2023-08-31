@@ -445,7 +445,7 @@ open class ParserATNSimulator(
                 D = computeTargetState(dfa, previousD, t)
             }
 
-            if (D === ATNSimulator.ERROR) {
+            if (D == ATNSimulator.ERROR) {
                 // if any configs in previous dipped into outer context, that
                 // means that input up to t actually finished entry rule
                 // at least for SLL decision. Full LL doesn't dip into outer
@@ -854,7 +854,7 @@ open class ParserATNSimulator(
 			 * already guaranteed to meet this condition whether or not it's
 			 * required.
 			 */
-            reach = removeAllConfigsNotInRuleStopState(reach, reach === intermediate)
+            reach = removeAllConfigsNotInRuleStopState(reach, reach == intermediate)
         }
 
         /* If skippedStopStates is not null, then it contains at least one
@@ -1117,7 +1117,7 @@ open class ParserATNSimulator(
                     continue
 
             statesFromAlt1.put(config.state.stateNumber, config.context!!)
-            if (updatedContext !== config.semanticContext) {
+            if (updatedContext != config.semanticContext) {
                 configSet.add(ATNConfig(config, updatedContext), mergeCache)
             } else {
                 configSet.add(config, mergeCache)
@@ -1181,7 +1181,7 @@ open class ParserATNSimulator(
         for (i in 1..nalts) {
             if (altToPred!![i] == null) {
                 altToPred[i] = SemanticContext.NONE
-            } else if (altToPred[i] !== SemanticContext.NONE) {
+            } else if (altToPred[i] != SemanticContext.NONE) {
                 nPredAlts++
             }
         }
@@ -1210,7 +1210,7 @@ open class ParserATNSimulator(
             if (ambigAlts != null && ambigAlts.get(i)) {
                 pairs.add(DFAState.PredPrediction(pred!!, i))
             }
-            if (pred !== SemanticContext.NONE) containsPredicate = true
+            if (pred != SemanticContext.NONE) containsPredicate = true
         }
 
         return if (!containsPredicate) {
@@ -1294,7 +1294,7 @@ open class ParserATNSimulator(
                 alts.add(c.alt)
             }
         }
-        return if (alts.size() === 0) ATN.INVALID_ALT_NUMBER else alts.minElement
+        return if (alts.size() == 0) ATN.INVALID_ALT_NUMBER else alts.minElement
     }
 
     /** Walk the list of configurations and split them according to
@@ -1312,7 +1312,7 @@ open class ParserATNSimulator(
         val succeeded = ATNConfigSet(configs.fullCtx)
         val failed = ATNConfigSet(configs.fullCtx)
         for (c in configs) {
-            if (c.semanticContext !== SemanticContext.NONE) {
+            if (c.semanticContext != SemanticContext.NONE) {
                 val predicateEvaluationResult = evalSemanticContext(c.semanticContext, outerContext, c.alt, configs.fullCtx)
                 if (predicateEvaluationResult) {
                     succeeded.add(c)
@@ -1337,8 +1337,8 @@ open class ParserATNSimulator(
                             complete: Boolean): BitSet {
         val predictions = BitSet()
         for (pair in predPredictions) {
-            if (pair!!.pred === SemanticContext.NONE) {
-                predictions.set(pair!!.alt!!)
+            if (pair!!.pred == SemanticContext.NONE) {
+                predictions.set(pair.alt)
                 if (!complete) {
                     break
                 }
@@ -1346,7 +1346,7 @@ open class ParserATNSimulator(
             }
 
             val fullCtx = false // in dfa
-            val predicateEvaluationResult = evalSemanticContext(pair!!.pred, outerContext, pair.alt, fullCtx)
+            val predicateEvaluationResult = evalSemanticContext(pair.pred, outerContext, pair.alt, fullCtx)
             if (debug || dfa_debug) {
                 println("eval pred $pair=$predicateEvaluationResult")
             }
@@ -1676,18 +1676,18 @@ open class ParserATNSimulator(
             }
             // Look for prefix op case like 'not expr', (' type ')' expr
             val returnStateTarget = returnState!!.transition(0).target
-            if (returnState.stateType == ATNState.BLOCK_END && returnStateTarget === p) {
+            if (returnState.stateType == ATNState.BLOCK_END && returnStateTarget == p) {
                 continue
             }
             // Look for 'expr op expr' or case where expr's return state is block end
             // of (...)* internal block; the block end points to loop back
             // which points to p but we don't need to check that
-            if (returnState === blockEndState) {
+            if (returnState == blockEndState) {
                 continue
             }
             // Look for ternary expr ? expr : expr. The return state points at block end,
             // which points at loop entry state
-            if (returnStateTarget === blockEndState) {
+            if (returnStateTarget == blockEndState) {
                 continue
             }
             // Look for complex prefix 'between expr and expr' case where 2nd expr's
@@ -1695,7 +1695,7 @@ open class ParserATNSimulator(
             if (returnStateTarget!!.stateType == ATNState.BLOCK_END &&
                     returnStateTarget.numberOfTransitions == 1 &&
                     returnStateTarget.transition(0).isEpsilon &&
-                    returnStateTarget.transition(0).target === p) {
+                    returnStateTarget.transition(0).target == p) {
                 continue
             }
 
@@ -2032,7 +2032,7 @@ open class ParserATNSimulator(
      * state was not already present.
      */
     protected fun addDFAState(dfa: DFA, D: DFAState): DFAState {
-        if (D === ATNSimulator.ERROR) {
+        if (D == ATNSimulator.ERROR) {
             return D
         }
 

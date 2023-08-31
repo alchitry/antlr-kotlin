@@ -17,6 +17,9 @@
 package com.alchitry.kotlinmultiplatform
 
 import org.antlr.v4.kotlinruntime.tree.ParseTree
+import kotlin.contracts.ExperimentalContracts
+import kotlin.contracts.InvocationKind
+import kotlin.contracts.contract
 import kotlin.reflect.KClass
 
 fun <T> Array<T>.indices(): List<Int> = this.indices.toList()
@@ -63,4 +66,12 @@ interface TypeDeclarator {
     fun getType(name: String): KClass<*> {
         return classesByName.first { it.simpleName == name }
     }
+}
+
+@OptIn(ExperimentalContracts::class)
+inline fun scoped(block: ()->Unit) {
+    contract {
+        callsInPlace(block, InvocationKind.EXACTLY_ONCE)
+    }
+    block()
 }

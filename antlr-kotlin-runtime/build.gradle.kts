@@ -32,10 +32,16 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+tasks.register<Jar>("sourcesJar") {
+    archiveClassifier.set("sources")
+    from(sourceSets.main.get().allSource)
+}
+
 publishing {
     publications {
         register("mavenJava", MavenPublication::class) {
             from(components["java"])
+            artifact(tasks["sourcesJar"])
         }
     }
 }

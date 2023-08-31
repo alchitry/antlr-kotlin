@@ -50,8 +50,7 @@ package <file.genPackage>;
 <endif>
 <namedActions.header>
 import com.alchitry.kotlinmultiplatform.asCharArray
-import com.alchitry.kotlinmultiplatform.getType
-import com.alchitry.kotlinmultiplatform.TypeDeclarator
+import com.alchitry.kotlinmultiplatform.scoped
 import org.antlr.v4.kotlinruntime.*
 import org.antlr.v4.kotlinruntime.atn.*
 import org.antlr.v4.kotlinruntime.atn.ATNDeserializer
@@ -61,9 +60,6 @@ import org.antlr.v4.kotlinruntime.dfa.*
 import org.antlr.v4.kotlinruntime.tree.ParseTreeListener
 import org.antlr.v4.kotlinruntime.tree.TerminalNode
 import org.antlr.v4.kotlinruntime.atn.ATN.Companion.INVALID_ALT_NUMBER
-import org.antlr.v4.kotlinruntime.tree.ParseTreeVisitor
-import kotlin.reflect.KClass
-
 <parser>
 >>
 
@@ -235,11 +231,6 @@ Parser(parser, funcs, atn, sempredFuncs, superClass) ::= <<
 Parser_(parser, funcs, atn, sempredFuncs, ctor, superClass) ::= <<
 
 class <parser.name>(input: TokenStream) : <superClass; null="Parser">(input) {
-
-    object solver : TypeDeclarator {
-        override val classesByName : List\<KClass\<*>\> = listOf(<parser.funcs:{f | <parser.name>.<f.name; format="cap">Context::class}; separator=",\n", wrap, anchor>)
-    }
-
 	// TODO verify version of runtime is compatible
 
     override val grammarFileName: String
@@ -295,9 +286,9 @@ class <parser.name>(input: TokenStream) : <superClass; null="Parser">(input) {
 	<funcs; separator="\n">
 
 <if(sempredFuncs)>
-	override fun sempred(_localctx: RuleContext?, ruleIndex: Int, predIndex: Int) : Boolean {
+	override fun sempred(_localctx: RuleContext?, ruleIndex: Int, actionIndex: Int) : Boolean {
 		when (ruleIndex) {
-		<parser.sempredFuncs.values:{f| <f.ruleIndex> -> return <f.name>_sempred(_localctx as <f.ctxType>, predIndex)}; separator="\n">
+		<parser.sempredFuncs.values:{f| <f.ruleIndex> -> return <f.name>_sempred(_localctx as <f.ctxType>?, actionIndex)}; separator="\n">
 		}
 		return true
 	}
@@ -325,10 +316,10 @@ fun action(RuleContext _localctx, int ruleIndex, int actionIndex) {
 <actionFuncs.values; separator="\n">
 <endif>
 <if(sempredFuncs)>
-override fun sempred(_localctx: RuleContext?, ruleIndex: Int, predIndex: Int) : Boolean {
+override fun sempred(_localctx: RuleContext?, ruleIndex: Int, actionIndex: Int) : Boolean {
 	when (ruleIndex) {
 	<recog.sempredFuncs.values:{f|
-<f.ruleIndex> -> return <f.name>_sempred(_localctx as <f.ctxType>, predIndex)}; separator="\n">
+<f.ruleIndex> -> return <f.name>_sempred(_localctx, actionIndex)}; separator="\n">
 	}
 	return true
 }
@@ -358,8 +349,8 @@ private fun <r.name>_action(<r.ctxType> _localctx, int actionIndex) {
  * overriding implementation impossible to maintain.
  */
 RuleSempredFunction(r, actions) ::= <<
-private fun <r.name>_sempred( _localctx : <r.ctxType>, predIndex: Int) : Boolean {
-	when (predIndex) {
+private fun <r.name>_sempred( _localctx : <r.ctxType>?, actionIndex: Int) : Boolean {
+	when (actionIndex) {
 	<actions:{index|
     <index> -> return <actions.(index)>}; separator="\n">
 	}
@@ -449,10 +440,10 @@ enterOuterAlt(_localctx, <currentOuterMostAltCodeBlock.alt.altNum>)
 >>
 
 CodeBlockForAlt(currentAltCodeBlock, locals, preamble, ops) ::= <<
-if (true){
-<locals; separator="\n">
-<preamble; separator="\n">
-<ops; separator="\n">
+scoped {
+    <locals; separator="\n">
+    <preamble; separator="\n">
+    <ops; separator="\n">
 }
 >>
 
@@ -714,13 +705,13 @@ ContextTokenListIndexedGetterDecl(t)  ::= <<
 fun <t.escapedName>(i: Int) : TerminalNode = getToken(Tokens.<t.name>.id, i) as TerminalNode
 >>
 ContextRuleGetterDecl(r)       ::= <<
-fun <r.escapedName>() : <r.ctxName>? = getRuleContext(solver.getType("<r.ctxName>"),0)
+fun <r.escapedName>() : <r.ctxName>? = getRuleContext(<r.ctxName>::class,0)
 >>
 ContextRuleListGetterDecl(r)   ::= <<
-fun <r.escapedName>() : List\<<r.ctxName>\> = getRuleContexts(solver.getType("<r.ctxName>"))
+fun <r.escapedName>() : List\<<r.ctxName>\> = getRuleContexts(<r.ctxName>::class)
 >>
 ContextRuleListIndexedGetterDecl(r)   ::= <<
-fun <r.escapedName>(i: Int) : <r.ctxName>? = getRuleContext(solver.getType("<r.ctxName>"),i)
+fun <r.escapedName>(i: Int) : <r.ctxName>? = getRuleContext(<r.ctxName>::class,i)
 >>
 
 LexerRuleContext() ::= "RuleContext"
@@ -841,7 +832,6 @@ import com.alchitry.kotlinmultiplatform.asCharArray
 import org.antlr.v4.kotlinruntime.RuleContext
 import org.antlr.v4.kotlinruntime.CharStream
 import org.antlr.v4.kotlinruntime.Lexer
-import org.antlr.v4.kotlinruntime.ThreadLocal
 import org.antlr.v4.kotlinruntime.Vocabulary
 import org.antlr.v4.kotlinruntime.VocabularyImpl
 import org.antlr.v4.kotlinruntime.atn.ATN
@@ -865,7 +855,6 @@ class <lexer.name>(val _input: CharStream) : <superClass; null="Lexer">(_input) 
 
     override val vocabulary: Vocabulary = <lexer.name>.VOCABULARY
 
-	@ThreadLocal
 	companion object {
 		val decisionToDFA : Array\<DFA>
 		val sharedContextCache = PredictionContextCache()
