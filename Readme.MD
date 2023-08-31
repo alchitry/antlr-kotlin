@@ -3,6 +3,12 @@
 [![Build Status](https://travis-ci.org/Strumenta/antlr-kotlin.svg?branch=master)](https://travis-ci.org/Strumenta/antlr-kotlin) [![Release](https://jitpack.io/v/com.strumenta/antlr-kotlin.svg)](https://jitpack.io/#com.strumenta/antlr-kotlin)
 [![License Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
+This project is a major overhaul of the [original repository](https://github.com/Strumenta/antlr-kotlin).
+This is used by [Alchitry Labs V2](https://github.com/alchitry/Alchitry-Labs-V2)
+and will feature a way to suspend during tree walks.
+
+If you are looking for a way to add a Kotlin target to your ANTLR project, go to the [original repository](https://github.com/Strumenta/antlr-kotlin).
+
 This project contains everything is needed to support Kotlin as a target for ANTLR. 
 It means:
 
