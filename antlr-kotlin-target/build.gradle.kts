@@ -9,7 +9,10 @@ dependencies {
 
 publishing {
     publications {
-        register("mavenJava", MavenPublication::class) {
+        register("maven", MavenPublication::class) {
+            artifactId = project.name
+            groupId = project.group as String
+            version = project.version as String
             from(components["java"])
         }
     }
