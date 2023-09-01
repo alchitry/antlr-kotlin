@@ -858,7 +858,7 @@ override fun <if(method.isEnter)>enter<else>exit<endif>Rule(listener: ParseTreeL
 	if ( listener is <parser.grammarName>Listener ) listener.<if(method.isEnter)>enter<else>exit<endif><struct.derivedFromName; format="cap">(this)
 }
 override suspend fun <if(method.isEnter)>enter<else>exit<endif>Rule(listener: SuspendParseTreeListener) {
-	if ( listener is <parser.grammarName>Listener ) listener.<if(method.isEnter)>enter<else>exit<endif><struct.derivedFromName; format="cap">(this)
+	if ( listener is Suspend<parser.grammarName>Listener ) listener.<if(method.isEnter)>enter<else>exit<endif><struct.derivedFromName; format="cap">(this)
 }
 >>
 
