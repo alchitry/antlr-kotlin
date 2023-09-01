@@ -8,6 +8,8 @@ package org.antlr.v4.kotlinruntime.tree
 
 import org.antlr.v4.kotlinruntime.ParserRuleContext
 
+sealed interface AnyParseTreeListener
+
 /** This interface describes the minimal core of methods triggered
  * by [ParseTreeWalker]. E.g.,
  *
@@ -19,7 +21,7 @@ import org.antlr.v4.kotlinruntime.ParserRuleContext
  *
  * https://github.com/antlr/antlr4/issues/841
  */
-interface ParseTreeListener {
+interface ParseTreeListener : AnyParseTreeListener {
     fun visitTerminal(node: TerminalNode)
     fun visitErrorNode(node: ErrorNode)
     fun enterEveryRule(ctx: ParserRuleContext)
@@ -33,7 +35,7 @@ interface ParseTreeListener {
     }
 }
 
-interface SuspendParseTreeListener {
+interface SuspendParseTreeListener : AnyParseTreeListener {
     suspend fun visitTerminal(node: TerminalNode)
     suspend fun visitErrorNode(node: ErrorNode)
     suspend fun enterEveryRule(ctx: ParserRuleContext)
