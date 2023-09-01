@@ -228,11 +228,11 @@ abstract class SemanticContext {
             val operands = ArrayList<SemanticContext>()
             for (context in opnds) {
                 val evaluated = context.evalPrecedence(parser, parserCallStack)
-                differs = differs or (evaluated != context)
+                differs = differs or (evaluated !== context)
                 if (evaluated == null) {
                     // The AND context is false if any element is false
                     return null
-                } else if (evaluated != NONE) {
+                } else if (evaluated !== NONE) {
                     // Reduce the result by skipping true elements
                     operands.add(evaluated)
                 }
@@ -322,8 +322,8 @@ abstract class SemanticContext {
             val operands = ArrayList<SemanticContext>()
             for (context in opnds) {
                 val evaluated = context.evalPrecedence(parser, parserCallStack)
-                differs = differs or (evaluated != context)
-                if (evaluated == NONE) {
+                differs = differs or (evaluated !== context)
+                if (evaluated === NONE) {
                     // The OR context is true if any element is true
                     return NONE
                 } else if (evaluated != null) {
@@ -366,8 +366,8 @@ abstract class SemanticContext {
         }
 
         fun and(a: SemanticContext?, b: SemanticContext?): SemanticContext? {
-            if (a == null || a == NONE) return b
-            if (b == null || b == NONE) return a
+            if (a == null || a === NONE) return b
+            if (b == null || b === NONE) return a
             val result = AND(a, b)
             return if (result.opnds.size == 1) {
                 result.opnds[0]
@@ -382,7 +382,7 @@ abstract class SemanticContext {
         fun or(a: SemanticContext?, b: SemanticContext?): SemanticContext? {
             if (a == null) return b
             if (b == null) return a
-            if (a == NONE || b == NONE) return NONE
+            if (a === NONE || b === NONE) return NONE
             val result = OR(a, b)
             return if (result.opnds.size == 1) {
                 result.opnds[0]

@@ -40,7 +40,7 @@ abstract class PredictionContext protected constructor(
 ) {
     /** This means only the [.EMPTY] (wildcard? not sure) context is in set.  */
     open val isEmpty: Boolean
-        get() = this == EMPTY
+        get() = this === EMPTY
 
     abstract fun size(): Int
 
@@ -80,7 +80,7 @@ abstract class PredictionContext protected constructor(
             var stateNumber = currentState
             val localBuffer = StringBuilder()
             localBuffer.append("[")
-            while (!p!!.isEmpty && p != stop) {
+            while (!p!!.isEmpty && p !== stop) {
                 var index = 0
                 if (p.size() > 0) {
                     var bits = 1
@@ -157,7 +157,7 @@ abstract class PredictionContext protected constructor(
 
             // if we are in RuleContext of start rule, s, then PredictionContext
             // is EMPTY. Nobody called us. (if we are empty, return empty)
-            if (outerContext1.readParent() == null || outerContext1 == EMPTY_RULECTX) {
+            if (outerContext1.readParent() == null || outerContext1 === EMPTY_RULECTX) {
                 return EMPTY
             }
 
@@ -292,8 +292,8 @@ abstract class PredictionContext protected constructor(
             if (a.returnState == b.returnState) { // a == b
                 val parent = merge(a.parent, b.parent, rootIsWildcard, mergeCache)
                 // if parent is same as existing a or b parent or reduced to a parent, return it
-                if (parent == a.parent) return a // ax + bx = ax, if a=b
-                if (parent == b.parent) return b // ax + bx = bx, if a=b
+                if (parent === a.parent) return a // ax + bx = ax, if a=b
+                if (parent === b.parent) return b // ax + bx = bx, if a=b
                 // else: ax + ay = a'[x,y]
                 // merge parents x and y, giving array node with x,y then remainders
                 // of those graphs.  dup a, a' points at merged array
@@ -304,7 +304,7 @@ abstract class PredictionContext protected constructor(
             } else { // a != b payloads differ
                 // see if we can collapse parents due to $+x parents if local ctx
                 var singleParent: PredictionContext? = null
-                if (a == b || a.parent != null && a.parent == b.parent) { // ax + bx = [a,b]x
+                if (a.parent != null && a.parent == b.parent) { // ax + bx = [a,b]x
                     singleParent = a.parent
                 }
                 if (singleParent != null) {    // parents are same
@@ -387,17 +387,17 @@ abstract class PredictionContext protected constructor(
                 rootIsWildcard: Boolean
         ): PredictionContext? {
             if (rootIsWildcard) {
-                if (a == EMPTY) return EMPTY  // * + b = *
-                if (b == EMPTY) return EMPTY  // a + * = *
+                if (a === EMPTY) return EMPTY  // * + b = *
+                if (b === EMPTY) return EMPTY  // a + * = *
             } else {
-                if (a == EMPTY && b == EMPTY) return EMPTY // $ + $ = $
+                if (a === EMPTY && b === EMPTY) return EMPTY // $ + $ = $
 
-                if (a == EMPTY) { // $ + x = [x,$]
+                if (a === EMPTY) { // $ + x = [x,$]
                     val payloads = intArrayOf(b.returnState, EMPTY_RETURN_STATE)
                     val parents = arrayOf(b.parent, null)
                     return ArrayPredictionContext(parents, payloads)
                 }
-                if (b == EMPTY) { // x + $ = [x,$] ($ is always last if present)
+                if (b === EMPTY) { // x + $ = [x,$] ($ is always last if present)
                     val payloads = intArrayOf(a.returnState, EMPTY_RETURN_STATE)
                     val parents = arrayOf(a.parent, null)
                     return ArrayPredictionContext(parents, payloads)
@@ -577,7 +577,7 @@ abstract class PredictionContext protected constructor(
             var parents = arrayOfNulls<PredictionContext>(context.size())
             for (i in parents.indices) {
                 val parent = getCachedContext(context.getParent(i)!!, contextCache, visited)
-                if (changed || parent != context.getParent(i)) {
+                if (changed || parent !== context.getParent(i)) {
                     if (!changed) {
                         parents = arrayOfNulls(context.size())
                         for (j in 0 until context.size()) {

@@ -168,7 +168,7 @@ open class ATNConfig {
             buf.append(context!!.toString())
             buf.append("]")
         }
-        if (semanticContext != null && semanticContext != SemanticContext.NONE) {
+        if (semanticContext != null && semanticContext !== SemanticContext.NONE) {
             buf.append(",")
             buf.append(semanticContext)
         }

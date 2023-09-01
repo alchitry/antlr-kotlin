@@ -108,7 +108,7 @@ object Trees {
         if (t == null || u == null || t.readParent() == null) return false
         var p: Tree? = u.readParent()
         while (p != null) {
-            if (t == p) return true
+            if (t === p) return true
             p = p.readParent()
         }
         return false

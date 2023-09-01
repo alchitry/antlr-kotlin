@@ -156,7 +156,7 @@ class LL1Analyzer(val atn: ATN) {
                 return
             }
 
-            if (ctx != PredictionContext.EMPTY) {
+            if (ctx !== PredictionContext.EMPTY) {
                 // run thru all possible stack tops in ctx
                 val removed = calledRuleStack.get(s.ruleIndex)
                 try {

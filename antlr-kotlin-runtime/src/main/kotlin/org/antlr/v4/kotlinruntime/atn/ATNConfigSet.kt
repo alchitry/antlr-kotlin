@@ -89,7 +89,7 @@ open class ATNConfigSet constructor(
         get() {
             val preds = ArrayList<SemanticContext>()
             for (c in configs) {
-                if (c.semanticContext != SemanticContext.NONE) {
+                if (c.semanticContext !== SemanticContext.NONE) {
                     preds.add(c.semanticContext!!)
                 }
             }
@@ -178,7 +178,7 @@ open class ATNConfigSet constructor(
             config: ATNConfig,
             mergeCache: DoubleKeyMap<PredictionContext, PredictionContext, PredictionContext>?): Boolean {
         if (isReadonly) throw IllegalStateException("This set is readonly")
-        if (config.semanticContext != SemanticContext.NONE) {
+        if (config.semanticContext !== SemanticContext.NONE) {
             hasSemanticContext = true
         }
         if (config.outerContextDepth > 0) {
@@ -249,7 +249,7 @@ open class ATNConfigSet constructor(
 
                 fullCtx == other.fullCtx &&
                 uniqueAlt == other.uniqueAlt &&
-                conflictingAlts == other.conflictingAlts &&
+                conflictingAlts === other.conflictingAlts &&
                 hasSemanticContext == other.hasSemanticContext &&
                 dipsIntoOuterContext == other.dipsIntoOuterContext
     }
@@ -271,7 +271,7 @@ open class ATNConfigSet constructor(
         get() = configs.size
 
     override fun isEmpty(): Boolean {
-        return  configs.isEmpty()
+        return configs.isEmpty()
     }
 
     override fun contains(o: ATNConfig): Boolean {

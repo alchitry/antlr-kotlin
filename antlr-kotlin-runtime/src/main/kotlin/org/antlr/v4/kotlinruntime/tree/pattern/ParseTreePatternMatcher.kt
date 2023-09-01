@@ -351,7 +351,7 @@ class ParseTreePatternMatcher
                 // add special rule token or conjure up new token from name
                 if (isCharUppercase(tagChunk.tag!!.get(0))) {
                     val ttype = parser.getTokenType(tagChunk.tag)
-                    if (ttype == Token.INVALID_TYPE) {
+                    if (ttype === Token.INVALID_TYPE) {
                         throw IllegalArgumentException("Unknown token " + tagChunk.tag + " in pattern: " + pattern)
                     }
                     val t = TokenTagToken(tagChunk.tag, ttype!!, tagChunk.label)

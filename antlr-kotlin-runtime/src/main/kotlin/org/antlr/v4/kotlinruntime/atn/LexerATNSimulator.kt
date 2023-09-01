@@ -178,7 +178,7 @@ class LexerATNSimulator(protected val recog: Lexer?, atn: ATN,
                 target = computeTargetState(input, s, t)
             }
 
-            if (target == ATNSimulator.ERROR) {
+            if (target === ATNSimulator.ERROR) {
                 break
             }
 
