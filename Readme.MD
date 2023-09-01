@@ -1,13 +1,20 @@
 # ANTLR Kotlin
 
-[![Build Status](https://travis-ci.org/Strumenta/antlr-kotlin.svg?branch=master)](https://travis-ci.org/Strumenta/antlr-kotlin) [![Release](https://jitpack.io/v/alchitry/antlr-kotlin.svg)](https://jitpack.io/#alchitry/antlr-kotlin)
+[![Release](https://jitpack.io/v/alchitry/antlr-kotlin.svg)](https://jitpack.io/#alchitry/antlr-kotlin)
 [![License Apache-2.0](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](LICENSE)
 
-This project is a major overhaul of the [original repository](https://github.com/Strumenta/antlr-kotlin).
-This is used by [Alchitry Labs V2](https://github.com/alchitry/Alchitry-Labs-V2)
-and will feature a way to suspend during tree walks.
+This project is a major overhaul of the [original repository](https://github.com/Strumenta/antlr-kotlin). If you are looking for a way to add a Kotlin target to your ANTLR project, go to the [original repository](https://github.com/Strumenta/antlr-kotlin).
 
-If you are looking for a way to add a Kotlin target to your ANTLR project, go to the [original repository](https://github.com/Strumenta/antlr-kotlin).
+This version strips away the non-JVM targets from the runtime. 
+The ParserTreeListener was changed to use all suspending methods.
+This allows for suspending methods to be used during tree walks.
+
+The ability to add listeners to the parser during the initial parse was removed to keep this from having to all be
+suspending methods.
+
+This is used by [Alchitry Labs V2](https://github.com/alchitry/Alchitry-Labs-V2)
+
+---
 
 This project contains everything is needed to support Kotlin as a target for ANTLR. 
 It means:
