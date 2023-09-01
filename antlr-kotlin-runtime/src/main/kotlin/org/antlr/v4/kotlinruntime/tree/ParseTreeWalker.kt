@@ -10,7 +10,24 @@ import org.antlr.v4.kotlinruntime.ParserRuleContext
 import org.antlr.v4.kotlinruntime.RuleContext
 
 object ParseTreeWalker {
-    suspend fun walk(listener: ParseTreeListener, t: ParseTree) {
+    fun walk(listener: ParseTreeListener, t: ParseTree) {
+        if (t is ErrorNode) {
+            listener.visitErrorNode(t)
+            return
+        } else if (t is TerminalNode) {
+            listener.visitTerminal(t)
+            return
+        }
+        val r = t as RuleNode
+        enterRule(listener, r)
+        val n = r.childCount
+        for (i in 0 until n) {
+            walk(listener, r.getChild(i)!!)
+        }
+        exitRule(listener, r)
+    }
+
+    suspend fun walk(listener: SuspendParseTreeListener, t: ParseTree) {
         if (t is ErrorNode) {
             listener.visitErrorNode(t)
             return
@@ -33,13 +50,25 @@ object ParseTreeWalker {
      * [RuleContext]-specific event. First we trigger the generic and then
      * the rule specific. We to them in reverse order upon finishing the node.
      */
-    suspend fun enterRule(listener: ParseTreeListener, r: RuleNode) {
+    fun enterRule(listener: ParseTreeListener, r: RuleNode) {
         val ctx = r.ruleContext as ParserRuleContext
         listener.enterEveryRule(ctx)
         ctx.enterRule(listener)
     }
 
-    suspend fun exitRule(listener: ParseTreeListener, r: RuleNode) {
+    fun exitRule(listener: ParseTreeListener, r: RuleNode) {
+        val ctx = r.ruleContext as ParserRuleContext
+        ctx.exitRule(listener)
+        listener.exitEveryRule(ctx)
+    }
+
+    suspend fun enterRule(listener: SuspendParseTreeListener, r: RuleNode) {
+        val ctx = r.ruleContext as ParserRuleContext
+        listener.enterEveryRule(ctx)
+        ctx.enterRule(listener)
+    }
+
+    suspend fun exitRule(listener: SuspendParseTreeListener, r: RuleNode) {
         val ctx = r.ruleContext as ParserRuleContext
         ctx.exitRule(listener)
         listener.exitEveryRule(ctx)

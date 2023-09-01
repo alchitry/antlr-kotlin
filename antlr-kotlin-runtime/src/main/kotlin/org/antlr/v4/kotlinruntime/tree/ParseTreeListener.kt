@@ -20,6 +20,20 @@ import org.antlr.v4.kotlinruntime.ParserRuleContext
  * https://github.com/antlr/antlr4/issues/841
  */
 interface ParseTreeListener {
+    fun visitTerminal(node: TerminalNode)
+    fun visitErrorNode(node: ErrorNode)
+    fun enterEveryRule(ctx: ParserRuleContext)
+    fun exitEveryRule(ctx: ParserRuleContext)
+
+    fun asSuspend(): SuspendParseTreeListener = object : SuspendParseTreeListener {
+        override suspend fun visitTerminal(node: TerminalNode) = this@ParseTreeListener.visitTerminal(node)
+        override suspend fun visitErrorNode(node: ErrorNode) = this@ParseTreeListener.visitErrorNode(node)
+        override suspend fun enterEveryRule(ctx: ParserRuleContext) = this@ParseTreeListener.enterEveryRule(ctx)
+        override suspend fun exitEveryRule(ctx: ParserRuleContext) = this@ParseTreeListener.exitEveryRule(ctx)
+    }
+}
+
+interface SuspendParseTreeListener {
     suspend fun visitTerminal(node: TerminalNode)
     suspend fun visitErrorNode(node: ErrorNode)
     suspend fun enterEveryRule(ctx: ParserRuleContext)

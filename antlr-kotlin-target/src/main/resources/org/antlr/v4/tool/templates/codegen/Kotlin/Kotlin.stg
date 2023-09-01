@@ -58,6 +58,7 @@ import org.antlr.v4.kotlinruntime.atn.ParserATNSimulator
 import org.antlr.v4.kotlinruntime.atn.PredictionContextCache
 import org.antlr.v4.kotlinruntime.dfa.*
 import org.antlr.v4.kotlinruntime.tree.ParseTreeListener
+import org.antlr.v4.kotlinruntime.tree.SuspendParseTreeListener
 import org.antlr.v4.kotlinruntime.tree.TerminalNode
 import org.antlr.v4.kotlinruntime.atn.ATN.Companion.INVALID_ALT_NUMBER
 <parser>
@@ -70,13 +71,57 @@ package <file.genPackage>
 <endif>
 <header>
 
+import org.antlr.v4.kotlinruntime.ParserRuleContext
+import org.antlr.v4.kotlinruntime.tree.ErrorNode
 import org.antlr.v4.kotlinruntime.tree.ParseTreeListener
+import org.antlr.v4.kotlinruntime.tree.SuspendParseTreeListener
+import org.antlr.v4.kotlinruntime.tree.TerminalNode
 
 /**
  * This interface defines a complete listener for a parse tree produced by
  * {@link <file.parserName>}.
  */
 interface <file.grammarName>Listener : ParseTreeListener {
+	<file.listenerNames:{lname |
+/**
+<if(file.listenerLabelRuleNames.(lname))>
+ * Enter a parse tree produced by the {@code <lname>\}
+ * labeled alternative in {@link <file.parserName>#<file.listenerLabelRuleNames.(lname)>\}.
+<else>
+ * Enter a parse tree produced by {@link <file.parserName>#<lname>\}.
+<endif>
+ * @param ctx the parse tree
+ */
+fun enter<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context)
+/**
+<if(file.listenerLabelRuleNames.(lname))>
+ * Exit a parse tree produced by the {@code <lname>\}
+ * labeled alternative in {@link <file.parserName>#<file.listenerLabelRuleNames.(lname)>\}.
+<else>
+ * Exit a parse tree produced by {@link <file.parserName>#<lname>\}.
+<endif>
+ * @param ctx the parse tree
+ */
+fun exit<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context)}; separator="\n">
+
+    override fun asSuspend(): Suspend<file.grammarName>Listener = object: Suspend<file.grammarName>Listener {
+    <file.listenerNames:{lname |
+    override suspend fun enter<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context) = this@<file.grammarName>Listener.enter<lname; format="cap">(ctx)
+    override suspend fun exit<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context) = this@<file.grammarName>Listener.exit<lname; format="cap">(ctx)
+    }; separator="\n">
+        override suspend fun enterEveryRule(ctx: ParserRuleContext) = this@<file.grammarName>Listener.enterEveryRule(ctx)
+        override suspend fun exitEveryRule(ctx: ParserRuleContext) = this@<file.grammarName>Listener.exitEveryRule(ctx)
+
+        override suspend fun visitErrorNode(node: ErrorNode) = this@<file.grammarName>Listener.visitErrorNode(node)
+        override suspend fun visitTerminal(node: TerminalNode) = this@<file.grammarName>Listener.visitTerminal(node)
+    }
+}
+
+/**
+ * This interface defines a complete listener for a parse tree produced by
+ * {@link <file.parserName>}.
+ */
+interface Suspend<file.grammarName>Listener : SuspendParseTreeListener {
 	<file.listenerNames:{lname |
 /**
 <if(file.listenerLabelRuleNames.(lname))>
@@ -118,6 +163,52 @@ import org.antlr.v4.kotlinruntime.tree.TerminalNode
  * of the available methods.
  */
 open class <file.grammarName>BaseListener : <file.grammarName>Listener {
+	<file.listenerNames:{lname |
+/**
+ * {@inheritDoc\}
+ *f
+ * \<p>The default implementation does nothing.\</p>
+ */
+override fun enter<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context) { \}
+/**
+ * {@inheritDoc\}
+ *
+ * \<p>The default implementation does nothing.\</p>
+ */
+override fun exit<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context) { \}}; separator="\n">
+
+	/**
+	 * {@inheritDoc\}
+	 *
+	 * \<p>The default implementation does nothing.\</p>
+	 */
+	override fun enterEveryRule(ctx: ParserRuleContext) { }
+	/**
+	 * {@inheritDoc\}
+	 *
+	 * \<p>The default implementation does nothing.\</p>
+	 */
+	override fun exitEveryRule(ctx: ParserRuleContext ) { }
+	/**
+	 * {@inheritDoc\}
+	 *
+	 * \<p>The default implementation does nothing.\</p>
+	 */
+	override fun visitTerminal(node: TerminalNode ) { }
+	/**
+	 * {@inheritDoc\}
+	 *
+	 * \<p>The default implementation does nothing.\</p>
+	 */
+	override fun visitErrorNode(node: ErrorNode) { }
+}
+
+/**
+ * This class provides an empty implementation of {@link <file.grammarName>Listener},
+ * which can be extended to create a listener which only needs to handle a subset
+ * of the available methods.
+ */
+open class Suspend<file.grammarName>BaseListener : Suspend<file.grammarName>Listener {
 	<file.listenerNames:{lname |
 /**
  * {@inheritDoc\}
@@ -763,7 +854,10 @@ open class <struct.name> : <currentRule.name; format="cap">Context {
 >>
 
 ListenerDispatchMethod(method) ::= <<
-override suspend fun <if(method.isEnter)>enter<else>exit<endif>Rule(listener: ParseTreeListener) {
+override fun <if(method.isEnter)>enter<else>exit<endif>Rule(listener: ParseTreeListener) {
+	if ( listener is <parser.grammarName>Listener ) listener.<if(method.isEnter)>enter<else>exit<endif><struct.derivedFromName; format="cap">(this)
+}
+override suspend fun <if(method.isEnter)>enter<else>exit<endif>Rule(listener: SuspendParseTreeListener) {
 	if ( listener is <parser.grammarName>Listener ) listener.<if(method.isEnter)>enter<else>exit<endif><struct.derivedFromName; format="cap">(this)
 }
 >>
