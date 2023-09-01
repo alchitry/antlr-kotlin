@@ -87,7 +87,7 @@ interface <file.grammarName>Listener : ParseTreeListener {
 <endif>
  * @param ctx the parse tree
  */
-fun enter<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context)
+suspend fun enter<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context)
 /**
 <if(file.listenerLabelRuleNames.(lname))>
  * Exit a parse tree produced by the {@code <lname>\}
@@ -97,7 +97,7 @@ fun enter<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Conte
 <endif>
  * @param ctx the parse tree
  */
-fun exit<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context)}; separator="\n">
+suspend fun exit<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context)}; separator="\n">
 }
 >>
 
@@ -121,41 +121,41 @@ open class <file.grammarName>BaseListener : <file.grammarName>Listener {
 	<file.listenerNames:{lname |
 /**
  * {@inheritDoc\}
- *
+ *f
  * \<p>The default implementation does nothing.\</p>
  */
-override fun enter<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context) { \}
+override suspend fun enter<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context) { \}
 /**
  * {@inheritDoc\}
  *
  * \<p>The default implementation does nothing.\</p>
  */
-override fun exit<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context) { \}}; separator="\n">
+override suspend fun exit<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context) { \}}; separator="\n">
 
 	/**
 	 * {@inheritDoc\}
 	 *
 	 * \<p>The default implementation does nothing.\</p>
 	 */
-	override fun enterEveryRule(ctx: ParserRuleContext) { }
+	override suspend fun enterEveryRule(ctx: ParserRuleContext) { }
 	/**
 	 * {@inheritDoc\}
 	 *
 	 * \<p>The default implementation does nothing.\</p>
 	 */
-	override fun exitEveryRule(ctx: ParserRuleContext ) { }
+	override suspend fun exitEveryRule(ctx: ParserRuleContext ) { }
 	/**
 	 * {@inheritDoc\}
 	 *
 	 * \<p>The default implementation does nothing.\</p>
 	 */
-	override fun visitTerminal(node: TerminalNode ) { }
+	override suspend fun visitTerminal(node: TerminalNode ) { }
 	/**
 	 * {@inheritDoc\}
 	 *
 	 * \<p>The default implementation does nothing.\</p>
 	 */
-	override fun visitErrorNode(node: ErrorNode) { }
+	override suspend fun visitErrorNode(node: ErrorNode) { }
 }
 >>
 
@@ -763,7 +763,7 @@ open class <struct.name> : <currentRule.name; format="cap">Context {
 >>
 
 ListenerDispatchMethod(method) ::= <<
-override fun <if(method.isEnter)>enter<else>exit<endif>Rule(listener: ParseTreeListener) {
+override suspend fun <if(method.isEnter)>enter<else>exit<endif>Rule(listener: ParseTreeListener) {
 	if ( listener is <parser.grammarName>Listener ) listener.<if(method.isEnter)>enter<else>exit<endif><struct.derivedFromName; format="cap">(this)
 }
 >>
@@ -817,7 +817,7 @@ _prevctx = _localctx
 >>
 
 recRuleSetPrevCtx() ::= <<
-if ( _parseListeners!=null ) triggerExitRuleEvent()
+//if ( _parseListeners!=null ) triggerExitRuleEvent()
     _prevctx = _localctx
 >>
 

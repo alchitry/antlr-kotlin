@@ -85,7 +85,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
 //     * [ParserRuleContext.children] list. Contexts are then not candidates
 //     * for garbage collection.
 //     */
-    var buildParseTree = true
+    val buildParseTree = true
     //
 //
 //    /**
@@ -103,7 +103,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
 //     *
 //     * @see .addParseListener
 //     */
-    protected var _parseListeners: MutableList<ParseTreeListener> = ArrayList()
+    //protected var _parseListeners: MutableList<ParseTreeListener> = ArrayList()
     //
 //    /**
 //     * The number of syntax errors reported during parsing. This value is
@@ -145,8 +145,8 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
 //        }
 //
 //
-    val parseListeners: List<ParseTreeListener>
-        get() = _parseListeners
+//    val parseListeners: List<ParseTreeListener>
+//        get() = _parseListeners
 
     /** Tell our token source and error strategy about a new way to create tokens.  */
     override var tokenFactory: TokenFactory<*>
@@ -423,90 +423,90 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
         return t
     }
 
-    /**
-     * Registers `listener` to receive events during the parsing process.
-     *
-     *
-     * To support output-preserving grammar transformations (including but not
-     * limited to left-recursion removal, automated left-factoring, and
-     * optimized code generation), calls to listener methods during the parse
-     * may differ substantially from calls made by
-     * [ParseTreeWalker.DEFAULT] used after the parse is complete. In
-     * particular, rule entry and exit events may occur in a different order
-     * during the parse than after the parser. In addition, calls to certain
-     * rule entry methods may be omitted.
-     *
-     *
-     * With the following specific exceptions, calls to listener events are
-     * *deterministic*, i.e. for identical input the calls to listener
-     * methods will be the same.
-     *
-     *
-     *  * Alterations to the grammar used to generate code may change the
-     * behavior of the listener calls.
-     *  * Alterations to the command line options passed to ANTLR 4 when
-     * generating the parser may change the behavior of the listener calls.
-     *  * Changing the version of the ANTLR Tool used to generate the parser
-     * may change the behavior of the listener calls.
-     *
-     *
-     * @param listener the listener to add
-     *
-     */
-    fun addParseListener(listener: ParseTreeListener) {
-        _parseListeners.add(listener)
-    }
-
-    /**
-     * Remove `listener` from the list of parse listeners.
-     *
-     *
-     * If `listener` is `null` or has not been added as a parse
-     * listener, this method does nothing.
-     *
-     * @see .addParseListener
-     *
-     *
-     * @param listener the listener to remove
-     */
-    fun removeParseListener(listener: ParseTreeListener) {
-        _parseListeners.remove(listener)
-    }
-
-    /**
-     * Remove all parse listeners.
-     *
-     * @see .addParseListener
-     */
-    fun removeParseListeners() {
-        _parseListeners.clear()
-    }
-
-    /**
-     * Notify any parse listeners of an enter rule event.
-     *
-     * @see .addParseListener
-     */
-    protected fun triggerEnterRuleEvent() {
-        for (listener in _parseListeners) {
-            listener.enterEveryRule(context!!)
-            context!!.enterRule(listener)
-        }
-    }
-
-    /**
-     * Notify any parse listeners of an exit rule event.
-     *
-     * @see .addParseListener
-     */
-    protected fun triggerExitRuleEvent() {
-        // reverse order walk of listeners
-        for (i in _parseListeners.indices.reversed()) {
-            val listener = _parseListeners[i]
-            context!!.exitRule(listener)
-            listener.exitEveryRule(context!!)
-        }
-    }
+//    /**
+//     * Registers `listener` to receive events during the parsing process.
+//     *
+//     *
+//     * To support output-preserving grammar transformations (including but not
+//     * limited to left-recursion removal, automated left-factoring, and
+//     * optimized code generation), calls to listener methods during the parse
+//     * may differ substantially from calls made by
+//     * [ParseTreeWalker.DEFAULT] used after the parse is complete. In
+//     * particular, rule entry and exit events may occur in a different order
+//     * during the parse than after the parser. In addition, calls to certain
+//     * rule entry methods may be omitted.
+//     *
+//     *
+//     * With the following specific exceptions, calls to listener events are
+//     * *deterministic*, i.e. for identical input the calls to listener
+//     * methods will be the same.
+//     *
+//     *
+//     *  * Alterations to the grammar used to generate code may change the
+//     * behavior of the listener calls.
+//     *  * Alterations to the command line options passed to ANTLR 4 when
+//     * generating the parser may change the behavior of the listener calls.
+//     *  * Changing the version of the ANTLR Tool used to generate the parser
+//     * may change the behavior of the listener calls.
+//     *
+//     *
+//     * @param listener the listener to add
+//     *
+//     */
+//    fun addParseListener(listener: ParseTreeListener) {
+//        _parseListeners.add(listener)
+//    }
+//
+//    /**
+//     * Remove `listener` from the list of parse listeners.
+//     *
+//     *
+//     * If `listener` is `null` or has not been added as a parse
+//     * listener, this method does nothing.
+//     *
+//     * @see .addParseListener
+//     *
+//     *
+//     * @param listener the listener to remove
+//     */
+//    fun removeParseListener(listener: ParseTreeListener) {
+//        _parseListeners.remove(listener)
+//    }
+//
+//    /**
+//     * Remove all parse listeners.
+//     *
+//     * @see .addParseListener
+//     */
+//    fun removeParseListeners() {
+//        _parseListeners.clear()
+//    }
+//
+//    /**
+//     * Notify any parse listeners of an enter rule event.
+//     *
+//     * @see .addParseListener
+//     */
+//    protected suspend fun triggerEnterRuleEvent() {
+//        for (listener in _parseListeners) {
+//            listener.enterEveryRule(context!!)
+//            context!!.enterRule(listener)
+//        }
+//    }
+//
+//    /**
+//     * Notify any parse listeners of an exit rule event.
+//     *
+//     * @see .addParseListener
+//     */
+//    protected suspend fun triggerExitRuleEvent() {
+//        // reverse order walk of listeners
+//        for (i in _parseListeners.indices.reversed()) {
+//            val listener = _parseListeners[i]
+//            context!!.exitRule(listener)
+//            listener.exitEveryRule(context!!)
+//        }
+//    }
 
     //
 //    /**
@@ -593,18 +593,18 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
         if (o!!.type != Recognizer.EOF) {
             inputStream!!.consume()
         }
-        val hasListener = _parseListeners.isNotEmpty()
-        if (buildParseTree || hasListener) {
+        //val hasListener = _parseListeners.isNotEmpty()
+        if (buildParseTree /*|| hasListener*/) {
             if (errorHandler.inErrorRecoveryMode(this)) {
                 val node = context!!.addErrorNode(createErrorNode(context, o))
-                for (listener in _parseListeners) {
-                    listener.visitErrorNode(node)
-                }
+//                for (listener in _parseListeners) {
+//                    listener.visitErrorNode(node)
+//                }
             } else {
                 val node = context!!.addChild(createTerminalNode(context, o))
-                for (listener in _parseListeners) {
-                    listener.visitTerminal(node)
-                }
+//                for (listener in _parseListeners) {
+//                    listener.visitTerminal(node)
+//                }
 
             }
         }
@@ -646,7 +646,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
         context = localctx
         context!!.start = _input!!.LT(1)
         if (buildParseTree) addContextToParseTree()
-        triggerEnterRuleEvent()
+        //triggerEnterRuleEvent()
     }
 
     fun exitRule() {
@@ -657,7 +657,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
             context!!.stop = _input!!.LT(-1) // stop node is what we just matched
         }
         // trigger event on _ctx, before it reverts to parent
-        triggerExitRuleEvent()
+        //triggerExitRuleEvent()
         state = context!!.invokingState
         context = context!!.readParent() as ParserRuleContext?
     }
@@ -667,7 +667,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
         localctx.altNumber = altNum
         // if we have new localctx, make sure we replace existing ctx
         // that is previous child of parse tree
-        if (buildParseTree && context !== localctx) {
+        if (buildParseTree && context != localctx) {
             val parent = context!!.readParent() as ParserRuleContext?
             if (parent != null) {
                 parent.removeLastChild()
@@ -688,7 +688,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
         _precedenceStack.push(precedence)
         context = localctx
         context!!.start = _input!!.LT(1)
-        triggerEnterRuleEvent() // simulates rule entry for left-recursive rules
+        //triggerEnterRuleEvent() // simulates rule entry for left-recursive rules
     }
 
     /** Like [.enterRule] but for recursive rules.
@@ -706,7 +706,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
             context!!.addChild(previous)
         }
 
-        triggerEnterRuleEvent() // simulates rule entry for left-recursive rules
+        //triggerEnterRuleEvent() // simulates rule entry for left-recursive rules
 
     }
 
@@ -717,8 +717,8 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
 
         // unroll so _ctx is as it was before call to recursive method
 
-        while (context !== _parentctx) {
-            triggerExitRuleEvent()
+        while (context != _parentctx) {
+            //triggerExitRuleEvent()
             context = context!!.readParent() as ParserRuleContext?
         }
 

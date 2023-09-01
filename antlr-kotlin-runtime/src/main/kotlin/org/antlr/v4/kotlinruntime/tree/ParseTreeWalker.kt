@@ -9,14 +9,13 @@ package org.antlr.v4.kotlinruntime.tree
 import org.antlr.v4.kotlinruntime.ParserRuleContext
 import org.antlr.v4.kotlinruntime.RuleContext
 
-open class ParseTreeWalker {
-
-    open fun walk(listener: ParseTreeListener, t: ParseTree) {
+object ParseTreeWalker {
+    suspend fun walk(listener: ParseTreeListener, t: ParseTree) {
         if (t is ErrorNode) {
-            listener.visitErrorNode(t as ErrorNode)
+            listener.visitErrorNode(t)
             return
         } else if (t is TerminalNode) {
-            listener.visitTerminal(t as TerminalNode)
+            listener.visitTerminal(t)
             return
         }
         val r = t as RuleNode
@@ -34,19 +33,15 @@ open class ParseTreeWalker {
      * [RuleContext]-specific event. First we trigger the generic and then
      * the rule specific. We to them in reverse order upon finishing the node.
      */
-    protected fun enterRule(listener: ParseTreeListener, r: RuleNode) {
+    suspend fun enterRule(listener: ParseTreeListener, r: RuleNode) {
         val ctx = r.ruleContext as ParserRuleContext
         listener.enterEveryRule(ctx)
         ctx.enterRule(listener)
     }
 
-    protected fun exitRule(listener: ParseTreeListener, r: RuleNode) {
+    suspend fun exitRule(listener: ParseTreeListener, r: RuleNode) {
         val ctx = r.ruleContext as ParserRuleContext
         ctx.exitRule(listener)
         listener.exitEveryRule(ctx)
-    }
-
-    companion object {
-        val DEFAULT = ParseTreeWalker()
     }
 }

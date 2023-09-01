@@ -152,8 +152,8 @@ open class ParserRuleContext : RuleContext {
 
     // Double dispatch methods for listeners
 
-    open fun enterRule(listener: ParseTreeListener) {}
-    open fun exitRule(listener: ParseTreeListener) {}
+    open suspend fun enterRule(listener: ParseTreeListener) {}
+    open suspend fun exitRule(listener: ParseTreeListener) {}
 
     /** Add a parse tree node to this as a child.  Works for
      * internal and leaf nodes. Does not set parent link;
