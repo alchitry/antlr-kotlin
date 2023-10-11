@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import kotlin.io.path.inputStream
 
 /** This class represents the primary interface for creating [CharStream]s
  * from a variety of sources as of 4.7.  The motivation was to support
@@ -66,9 +67,7 @@ object CharStreams : AbstractCharStreams() {
      */
     @Suppress("MemberVisibilityCanBePrivate")
     fun fromPath(path: Path, charset: Charset = StandardCharsets.UTF_8): CharStream {
-        Files.newByteChannel(path).use { channel ->
-            return fromChannel(channel, charset, path.toString())
-        }
+        return fromStream(path.inputStream(), charset, path.toString())
     }
 
     /**
@@ -90,9 +89,7 @@ object CharStreams : AbstractCharStreams() {
             charset: Charset = StandardCharsets.UTF_8,
             sourceName: String = IntStream.UNKNOWN_SOURCE_NAME
     ): CharStream {
-        Channels.newChannel(`is`).use { channel ->
-            return fromChannel(channel, charset, sourceName)
-        }
+        return fromString(`is`.bufferedReader(charset).use{it.readText()})
     }
 
     /**
