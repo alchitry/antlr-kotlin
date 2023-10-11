@@ -89,7 +89,7 @@ object CharStreams : AbstractCharStreams() {
             charset: Charset = StandardCharsets.UTF_8,
             sourceName: String = IntStream.UNKNOWN_SOURCE_NAME
     ): CharStream {
-        return fromString(`is`.bufferedReader(charset).use{it.readText()})
+        return fromString(`is`.bufferedReader(charset).use{it.readText()}, sourceName)
     }
 
     /**
