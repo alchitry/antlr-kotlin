@@ -111,16 +111,17 @@ object CharStreams : AbstractCharStreams() {
             val utf8BytesIn = ByteBuffer.allocate(DEFAULT_BUFFER_SIZE)
 
             var endOfInput = false
-            var bytes = ByteArray(0)
+            val bytes = mutableListOf<Byte>()
             while (!endOfInput) {
                 utf8BytesIn.rewind()
                 val bytesRead = readableByteChannel.read(utf8BytesIn)
                 endOfInput = bytesRead == -1
-                bytes += utf8BytesIn.array()
                 utf8BytesIn.flip()
-                utf8BytesIn.compact()
+                while (utf8BytesIn.hasRemaining())
+                    bytes.add(utf8BytesIn.get())
+                utf8BytesIn.clear()
             }
-            return StringCharStream(String(bytes, charset), sourceName)
+            return StringCharStream(String(bytes.toByteArray(), charset), sourceName)
         }
     }
 }// Utility class; do not construct.
