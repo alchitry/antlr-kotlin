@@ -5,6 +5,8 @@
  */
 package org.antlr.v4.kotlinruntime
 
+import org.antlr.v4.kotlinruntime.tree.ParseTree
+
 /**
  * This class extends [ParserRuleContext] by allowing the value of
  * [.getRuleIndex] to be explicitly set for the context.
@@ -34,5 +36,9 @@ class InterpreterRuleContext : ParserRuleContext {
                 invokingStateNumber: Int,
                 ruleIndex: Int) : super(parent, invokingStateNumber) {
         this.ruleIndex = ruleIndex
+    }
+
+    override fun deepCopy(): InterpreterRuleContext {
+        return InterpreterRuleContext().also { deepCopyInto(it) }
     }
 }

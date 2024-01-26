@@ -63,10 +63,12 @@ import org.antlr.v4.kotlinruntime.tree.Trees
  * @see ParserRuleContext
  */
 
-val EMPTY_RULECTX = ParserRuleContext()
+val EMPTY_RULECTX = object: ParserRuleContext() {
+    override fun deepCopy() = this
+}
 
 
-open class RuleContext : RuleNode {
+abstract class RuleContext : RuleNode {
     //    override fun setParent(parent: RuleContext) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }

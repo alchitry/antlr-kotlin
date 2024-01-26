@@ -63,4 +63,6 @@ interface ParseTree : SyntaxTree {
      * based upon the parser.
      */
     fun toStringTree(parser: Parser): String
+
+    fun deepCopy(): ParseTree
 }

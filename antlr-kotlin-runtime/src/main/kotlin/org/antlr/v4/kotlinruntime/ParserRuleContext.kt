@@ -33,7 +33,7 @@ import kotlin.reflect.KClass
 // * group values such as this aggregate.  The getters/setters are there to
 // * satisfy the superclass interface.
 // */
-open class ParserRuleContext : RuleContext {
+abstract class ParserRuleContext : RuleContext {
 //    override fun setParent(parent: RuleContext) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }
@@ -47,7 +47,10 @@ open class ParserRuleContext : RuleContext {
     var children: MutableList<ParseTree>? = null
 
     val position: Position?
-        get() = if (start != null && stop!!.endPoint() != null) Position(start!!.startPoint(), stop!!.endPoint()!!) else null
+        get() = if (start != null && stop!!.endPoint() != null) Position(
+            start!!.startPoint(),
+            stop!!.endPoint()!!
+        ) else null
 //
 //    /** For debugging/tracing purposes, we want to track all of the nodes in
 //     * the ATN traversed by the parser for a particular rule.
@@ -75,12 +78,14 @@ open class ParserRuleContext : RuleContext {
      * (for example, zero length or error productions) this token may exceed stop.
      */
     var start: Token? = null
+
     /**
      * Get the final token in this context.
      * Note that the range from start to stop is inclusive, so for rules that do not consume anything
      * (for example, zero length or error productions) this token may precede start.
      */
     var stop: Token? = null
+
     //
 //    /**
 //     * The exception that forced this rule to return. If the rule successfully
@@ -236,6 +241,18 @@ open class ParserRuleContext : RuleContext {
 
     override fun getChild(i: Int): ParseTree? {
         return if (children != null && i >= 0 && i < children!!.size) children!![i] else null
+    }
+
+    fun deepCopyInto(newContext: ParserRuleContext) {
+        newContext.parent = null
+        newContext.invokingState = invokingState
+
+        newContext.start = start
+        newContext.stop = stop
+
+        newContext.children = children?.map { child ->
+            child.deepCopy().also { it.assignParent(newContext) }
+        }?.toMutableList()
     }
 
     fun <T : ParseTree> getChild(ctxType: KClass<T>, i: Int): T? {

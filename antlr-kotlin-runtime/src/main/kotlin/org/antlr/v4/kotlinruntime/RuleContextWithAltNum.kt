@@ -19,6 +19,13 @@ import org.antlr.v4.kotlinruntime.atn.ATN
  * will really every use this.
  */
 class RuleContextWithAltNum : ParserRuleContext {
+    override fun deepCopy(): RuleContextWithAltNum {
+        return RuleContextWithAltNum().also {
+            it.altNumber = altNumber
+            deepCopyInto(it)
+        }
+    }
+
     override var altNumber: Int = 0
 
     constructor() {

@@ -63,4 +63,8 @@ open class TerminalNodeImpl(override var symbol: Token?) : TerminalNode {
     override fun toStringTree(): String {
         return toString()
     }
+
+    override fun deepCopy(): ParseTree {
+        return TerminalNodeImpl(symbol)
+    }
 }
