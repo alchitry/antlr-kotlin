@@ -69,6 +69,7 @@ val EMPTY_RULECTX = object: ParserRuleContext() {
 
 
 abstract class RuleContext : RuleNode {
+    override var skip: Boolean = false
     //    override fun setParent(parent: RuleContext) {
 //        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
 //    }

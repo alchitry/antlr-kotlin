@@ -21,6 +21,7 @@ import org.antlr.v4.kotlinruntime.tree.ParseTree
  * provide equivalent functionality.
  */
 class InterpreterRuleContext : ParserRuleContext {
+    override var skip: Boolean = false
 
     constructor() {}
 

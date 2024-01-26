@@ -36,6 +36,11 @@ interface ParseTree : SyntaxTree {
      */
     val text: String
 
+    /**
+     * Flag that can be used to allowing skipping on traversals.
+     */
+    var skip: Boolean
+
     override fun getChild(i: Int): ParseTree?
 
 

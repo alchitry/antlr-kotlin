@@ -11,6 +11,7 @@ import org.antlr.v4.kotlinruntime.Token
 import org.antlr.v4.kotlinruntime.misc.Interval
 
 open class TerminalNodeImpl(override var symbol: Token?) : TerminalNode {
+    override var skip: Boolean = false
 
     private var parent: ParseTree? = null
 
