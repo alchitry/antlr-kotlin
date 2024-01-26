@@ -832,12 +832,15 @@ open class <struct.name> : <if(contextSuperClass)><contextSuperClass><else>Parse
 	constructor(parent: ParserRuleContext?, invokingState: Int<ctorAttrs:{a | , <a>}>) : super(parent, invokingState){
 		<struct.ctorAttrs:{a | this.<a.name> = <a.name>;}; separator="\n">
 	}
+
 	constructor(): super() {}
+
     override fun deepCopy(): <struct.name> {
         return <struct.name>().also {
             deepCopyInto(it)
         }
     }
+
 <if(struct.provideCopyFrom)> <! don't need copy unless we have subclasses !>
 	fun copyFrom(ctx: <struct.name>) {
 		super.copyFrom(ctx)
@@ -855,6 +858,14 @@ open class <struct.name> : <currentRule.name; format="cap">Context {
 	<getters:{g | <g>}; separator="\n">
 	constructor(ctx: <currentRule.name; format="cap">Context) { copyFrom(ctx) }
 	<dispatchMethods; separator="\n">
+
+    constructor(): super() {}
+
+    override fun deepCopy(): <struct.name> {
+        return <struct.name>().also {
+            deepCopyInto(it)
+        }
+    }
 }
 >>
 

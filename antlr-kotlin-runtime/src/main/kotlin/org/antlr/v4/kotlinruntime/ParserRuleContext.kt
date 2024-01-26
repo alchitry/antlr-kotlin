@@ -243,6 +243,20 @@ abstract class ParserRuleContext : RuleContext {
         return if (children != null && i >= 0 && i < children!!.size) children!![i] else null
     }
 
+    override fun hashCode(): Int {
+        return start.hashCode() xor stop.hashCode()
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other)
+            return true
+//        if (this.javaClass != other?.javaClass)
+//            return false
+        if (other !is ParserRuleContext)
+            return false
+        return start != null && stop != null && start == other.start && stop == other.stop
+    }
+
     fun deepCopyInto(newContext: ParserRuleContext) {
         newContext.parent = null
         newContext.invokingState = invokingState

@@ -667,7 +667,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
         localctx.altNumber = altNum
         // if we have new localctx, make sure we replace existing ctx
         // that is previous child of parse tree
-        if (buildParseTree && context != localctx) {
+        if (buildParseTree && context !== localctx) {
             val parent = context!!.readParent() as ParserRuleContext?
             if (parent != null) {
                 parent.removeLastChild()
@@ -717,7 +717,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
 
         // unroll so _ctx is as it was before call to recursive method
 
-        while (context != _parentctx) {
+        while (context !== _parentctx) {
             //triggerExitRuleEvent()
             context = context!!.readParent() as ParserRuleContext?
         }
@@ -725,7 +725,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
         // hook into tree
         retctx!!.assignParent(_parentctx)
 
-        if (buildParseTree && _parentctx != null) {
+        if (buildParseTree && _parentctx !== null) {
             // add return ctx into invoking rule's tree
             _parentctx.addChild(retctx)
         }
@@ -807,7 +807,7 @@ abstract class Parser(input: TokenStream) : Recognizer<Token, ParserATNSimulator
         var p = p
         val ruleNames = ruleNames
         val stack = ArrayList<String>()
-        while (p != null) {
+        while (p !== null) {
             // compute what follows who invoked us
             val ruleIndex = p!!.ruleIndex
             if (ruleIndex < 0)
