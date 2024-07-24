@@ -48,6 +48,7 @@ public class KotlinTarget extends JavaTarget {
         map.put((char) 14, "\\u000e");
         map.put((char) 15, "\\u000f");
         map.put('"', "\\\"");
+        map.put('$', "\\$");
         charValueEscape = map;
     }
 
@@ -57,7 +58,7 @@ public class KotlinTarget extends JavaTarget {
 
     @Override
     public Map<Character, String> getTargetCharValueEscape() {
-        return super.getTargetCharValueEscape();
+        return charValueEscape;
     }
 
     public Set<String> getBadWords() {
