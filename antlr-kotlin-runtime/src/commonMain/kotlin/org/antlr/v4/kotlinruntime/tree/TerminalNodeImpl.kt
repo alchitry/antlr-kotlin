@@ -9,6 +9,7 @@ import org.antlr.v4.kotlinruntime.Token
 import org.antlr.v4.kotlinruntime.misc.Interval
 
 public open class TerminalNodeImpl(override var symbol: Token) : TerminalNode {
+  override var skip: Boolean = false
   private var parent: ParseTree? = null
 
   override val childCount: Int = 0
@@ -50,4 +51,8 @@ public open class TerminalNodeImpl(override var symbol: Token) : TerminalNode {
 
   override fun toStringTree(): String =
     toString()
+
+  override fun deepCopy(): ParseTree {
+    return TerminalNodeImpl(symbol)
+  }
 }

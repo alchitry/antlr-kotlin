@@ -17,6 +17,10 @@ import org.antlr.v4.kotlinruntime.Token
  */
 public interface ParseTree : SyntaxTree {
   /**
+   * Used as a flag to skip portions of the tree when walking.
+   */
+  public var skip: Boolean
+  /**
    * Return the combined text of all leaf nodes. Does not get any
    * off-channel tokens (if any) so won't return whitespace and
    * comments if they are sent to parser on hidden channel.
@@ -57,4 +61,9 @@ public interface ParseTree : SyntaxTree {
    * based upon the parser.
    */
   public fun toStringTree(parser: Parser): String
+
+  /**
+   * Creates a deep copy of this ParseTree.
+   */
+  public fun deepCopy(): ParseTree
 }

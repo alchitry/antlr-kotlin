@@ -70,7 +70,11 @@ package <file.genPackage>
 <endif>
 <header>
 
+import org.antlr.v4.kotlinruntime.ParserRuleContext
+import org.antlr.v4.kotlinruntime.tree.ErrorNode
 import org.antlr.v4.kotlinruntime.tree.ParseTreeListener
+import org.antlr.v4.kotlinruntime.tree.SuspendParseTreeListener
+import org.antlr.v4.kotlinruntime.tree.TerminalNode
 
 /**
  * This interface defines a complete listener for a parse tree produced by [<file.parserName>].
@@ -99,8 +103,48 @@ public interface <file.grammarName>Listener : ParseTreeListener {
      */
     public fun exit<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context)
 }; separator="\n">
+
+    override fun asSuspend(): Suspend<file.grammarName>Listener = object: Suspend<file.grammarName>Listener {
+    <file.listenerNames:{lname |
+    override suspend fun enter<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context) = this@<file.grammarName>Listener.enter<lname; format="cap">(ctx)
+    override suspend fun exit<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context) = this@<file.grammarName>Listener.exit<lname; format="cap">(ctx)
+    }; separator="\n">
+        override suspend fun enterEveryRule(ctx: ParserRuleContext) = this@<file.grammarName>Listener.enterEveryRule(ctx)
+        override suspend fun exitEveryRule(ctx: ParserRuleContext) = this@<file.grammarName>Listener.exitEveryRule(ctx)
+
+        override suspend fun visitErrorNode(node: ErrorNode) = this@<file.grammarName>Listener.visitErrorNode(node)
+        override suspend fun visitTerminal(node: TerminalNode) = this@<file.grammarName>Listener.visitTerminal(node)
+    }
 }
 
+/**
+ * This interface defines a complete suspend listener for a parse tree produced by [<file.parserName>].
+ */
+public interface Suspend<file.grammarName>Listener : SuspendParseTreeListener {
+<file.listenerNames:{lname |
+    /**
+    <if(file.listenerLabelRuleNames.(lname))>
+     * Enter a parse tree produced by the `<lname>` labeled alternative in [<file.parserName>.<file.listenerLabelRuleNames.(lname)>].
+    <else>
+     * Enter a parse tree produced by [<file.parserName>.<lname>].
+    <endif>
+     *
+     * @param ctx The parse tree
+     */
+    public suspend fun enter<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context)
+
+    /**
+    <if(file.listenerLabelRuleNames.(lname))>
+     * Exit a parse tree produced by the `<lname>` labeled alternative in [<file.parserName>.<file.listenerLabelRuleNames.(lname)>].
+    <else>
+     * Exit a parse tree produced by [<file.parserName>.<lname>].
+    <endif>
+     *
+     * @param ctx The parse tree
+     */
+    public suspend fun exit<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context)
+}; separator="\n">
+}
 >>
 
 BaseListenerFile(file, header, namedActions) ::= <<
@@ -150,6 +194,44 @@ public open class <file.grammarName>BaseListener : <file.grammarName>Listener {
      * The default implementation does nothing.
      */
     override fun visitErrorNode(node: ErrorNode) {}
+}
+
+/**
+ * This class provides an empty implementation of Suspend[<file.grammarName>Listener],
+ * which can be extended to create a listener which only needs to handle a subset
+ * of the available methods.
+ */
+public open class Suspend<file.grammarName>BaseListener : Suspend<file.grammarName>Listener {
+<file.listenerNames:{lname |
+    /**
+     * The default implementation does nothing.
+     */
+    override suspend fun enter<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context) {\}
+
+    /**
+     * The default implementation does nothing.
+     */
+    override suspend fun exit<lname; format="cap">(ctx: <file.parserName>.<lname; format="cap">Context) {\}
+}; separator="\n">
+    /**
+     * The default implementation does nothing.
+     */
+    override suspend fun enterEveryRule(ctx: ParserRuleContext) {}
+
+    /**
+     * The default implementation does nothing.
+     */
+    override suspend fun exitEveryRule(ctx: ParserRuleContext) {}
+
+    /**
+     * The default implementation does nothing.
+     */
+    override suspend fun visitTerminal(node: TerminalNode) {}
+
+    /**
+     * The default implementation does nothing.
+     */
+    override suspend fun visitErrorNode(node: ErrorNode) {}
 }
 
 >>
@@ -827,15 +909,19 @@ public open class <struct.name> : <if(contextSuperClass)><contextSuperClass><els
         <struct.ctorAttrs:{a | this.<a.escapedName> = <a.escapedName>}; separator="\n">
     }
 
-    <! Don't need copy unless we have subclasses !>
-    <if(struct.provideCopyFrom)>
     public constructor() : super()
 
+    <! Don't need copy unless we have subclasses !>
+    <if(struct.provideCopyFrom)>
     public fun copyFrom(ctx: <struct.name>) {
         super.copyFrom(ctx)
         <struct.attrs:{a | this.<a.escapedName> = ctx.<a.escapedName>}; separator="\n">
     }
     <endif>
+
+    override fun deepCopy(): <struct.name> {
+        return <struct.name>().also { it.copyFrom(this) }
+    }
     <dispatchMethods; separator="\n\n">
     <extensionMembers; separator="\n\n">
 }
@@ -851,6 +937,10 @@ public open class <struct.name> : <currentRule.name; format="cap">Context {
         copyFrom(ctx)
     }
 
+    override fun deepCopy(): <struct.name> {
+            return <struct.name>(this)
+        }
+
     <dispatchMethods; separator="\n\n">
 }
 
@@ -859,6 +949,11 @@ public open class <struct.name> : <currentRule.name; format="cap">Context {
 ListenerDispatchMethod(method) ::= <<
 override fun <if(method.isEnter)>enter<else>exit<endif>Rule(listener: ParseTreeListener) {
     if (listener is <parser.grammarName>Listener) {
+        listener.<if(method.isEnter)>enter<else>exit<endif><struct.derivedFromName; format="cap">(this)
+    }
+}
+override suspend fun <if(method.isEnter)>enter<else>exit<endif>Rule(listener: SuspendParseTreeListener) {
+    if (listener is Suspend<parser.grammarName>Listener) {
         listener.<if(method.isEnter)>enter<else>exit<endif><struct.derivedFromName; format="cap">(this)
     }
 }

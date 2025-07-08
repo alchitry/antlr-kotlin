@@ -15,6 +15,7 @@ package org.antlr.v4.kotlinruntime
  * provide equivalent functionality.
  */
 public class InterpreterRuleContext : ParserRuleContext {
+  override var skip: Boolean = false
   override val ruleIndex: Int
 
   public constructor() {
@@ -35,5 +36,9 @@ public class InterpreterRuleContext : ParserRuleContext {
     ruleIndex: Int,
   ) : super(parent, invokingStateNumber) {
     this.ruleIndex = ruleIndex
+  }
+
+  override fun deepCopy(): InterpreterRuleContext {
+    return InterpreterRuleContext().also { it.copyFrom(this) }
   }
 }

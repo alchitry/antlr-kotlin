@@ -66,6 +66,7 @@ import kotlin.jvm.JvmField
  */
 @Suppress("MemberVisibilityCanBePrivate")
 public open class RuleContext : RuleNode {
+  override var skip: Boolean = false
   /**
    * What context invoked this rule?
    */
@@ -159,6 +160,11 @@ public open class RuleContext : RuleNode {
 
   override fun setParent(value: RuleContext?) {
     parent = value
+  }
+
+  override fun deepCopy(): ParseTree {
+    check(childCount == 0) {"Default deepCopy() called on RuleContext with children."}
+    return this
   }
 
   public open fun depth(): Int {

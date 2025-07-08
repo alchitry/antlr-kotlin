@@ -4,10 +4,7 @@ package org.antlr.v4.kotlinruntime
 
 import org.antlr.v4.kotlinruntime.ast.Position
 import org.antlr.v4.kotlinruntime.misc.Interval
-import org.antlr.v4.kotlinruntime.tree.ErrorNode
-import org.antlr.v4.kotlinruntime.tree.ParseTree
-import org.antlr.v4.kotlinruntime.tree.ParseTreeListener
-import org.antlr.v4.kotlinruntime.tree.TerminalNode
+import org.antlr.v4.kotlinruntime.tree.*
 import kotlin.jvm.JvmField
 import kotlin.reflect.KClass
 
@@ -168,6 +165,22 @@ public open class ParserRuleContext : RuleContext {
   // Double dispatch methods for listeners
   public open fun enterRule(listener: ParseTreeListener) {}
   public open fun exitRule(listener: ParseTreeListener) {}
+  public open suspend fun enterRule(listener: SuspendParseTreeListener) {}
+  public open suspend fun exitRule(listener: SuspendParseTreeListener) {}
+
+  override fun hashCode(): Int {
+    return start.hashCode() xor stop.hashCode()
+  }
+
+  override fun equals(other: Any?): Boolean {
+    if (this === other)
+      return true
+//        if (this.javaClass != other?.javaClass)
+//            return false
+    if (other !is ParserRuleContext)
+      return false
+    return start != null && stop != null && start == other.start && stop == other.stop
+  }
 
   /**
    * Add a parse tree node to this as a child.

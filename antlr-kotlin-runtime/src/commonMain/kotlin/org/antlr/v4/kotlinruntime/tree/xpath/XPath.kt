@@ -171,7 +171,11 @@ public open class XPath(protected var parser: Parser, protected var xpath: Strin
    * The root `/` is relative to the node passed to [evaluate].
    */
   public open fun evaluate(t: ParseTree): Collection<ParseTree> {
-    val dummyRoot = ParserRuleContext()
+    val dummyRoot = object : ParserRuleContext() {
+      override fun deepCopy(): ParseTree {
+        return this
+      }
+    }
     dummyRoot.addChild(t as ParserRuleContext)
 
     var work = setOf<ParseTree>(dummyRoot)
