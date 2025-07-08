@@ -398,7 +398,7 @@ val VOCABULARY = VocabularyImpl(LITERAL_NAMES.toTypedArray(), SYMBOLIC_NAMES.toT
 
 dumpActions(recog, argFuncs, actionFuncs, sempredFuncs) ::= <<
 <if(actionFuncs)>
-fun action(_localctx: RuleContext?, ruleIndex: Int, actionIndex: Int) {
+override fun action(_localctx: RuleContext?, ruleIndex: Int, actionIndex: Int) {
 	when (ruleIndex) {
 	<recog.actionFuncs.values:{f|
     <f.ruleIndex> -> <f.name>_action(_localctx as <f.ctxType>?, actionIndex);}; separator="\n">
