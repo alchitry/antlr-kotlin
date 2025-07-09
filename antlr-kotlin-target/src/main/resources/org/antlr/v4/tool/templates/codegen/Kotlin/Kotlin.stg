@@ -920,7 +920,7 @@ public open class <struct.name> : <if(contextSuperClass)><contextSuperClass><els
     <endif>
 
     override fun deepCopy(): <struct.name> {
-        return <struct.name>().also { it.copyFrom(this) }
+        return <struct.name>().also { it.deepCopyFrom(this) }
     }
     <dispatchMethods; separator="\n\n">
     <extensionMembers; separator="\n\n">
@@ -938,7 +938,7 @@ public open class <struct.name> : <currentRule.name; format="cap">Context {
     }
 
     override fun deepCopy(): <struct.name> {
-            return <struct.name>(this)
+            return <struct.name>(this).also { it.deepCopyFrom(this) }
         }
 
     <dispatchMethods; separator="\n\n">

@@ -39,6 +39,6 @@ public class InterpreterRuleContext : ParserRuleContext {
   }
 
   override fun deepCopy(): InterpreterRuleContext {
-    return InterpreterRuleContext().also { it.copyFrom(this) }
+    return InterpreterRuleContext().also { it.deepCopyFrom(this) }
   }
 }

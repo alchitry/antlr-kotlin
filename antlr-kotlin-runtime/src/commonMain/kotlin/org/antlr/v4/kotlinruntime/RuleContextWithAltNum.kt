@@ -23,7 +23,7 @@ import org.antlr.v4.kotlinruntime.atn.ATN
 public class RuleContextWithAltNum : ParserRuleContext {
   override fun deepCopy(): RuleContextWithAltNum {
     return RuleContextWithAltNum().also {
-      it.copyFrom(this)
+      it.deepCopyFrom(this)
       it.altNumber = altNumber
     }
   }

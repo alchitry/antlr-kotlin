@@ -162,6 +162,22 @@ public open class ParserRuleContext : RuleContext {
     }
   }
 
+  /**
+   * Deep copies from `ctx` into this context from this node down including children.
+   * The parent is set to null.
+   */
+  public fun deepCopyFrom(ctx: ParserRuleContext) {
+    parent = null
+    invokingState = ctx.invokingState
+
+    start = ctx.start
+    stop = ctx.stop
+
+    children = ctx.children?.map { child ->
+      child.deepCopy().also { it.setParent(this) }
+    }?.toMutableList()
+  }
+
   // Double dispatch methods for listeners
   public open fun enterRule(listener: ParseTreeListener) {}
   public open fun exitRule(listener: ParseTreeListener) {}
