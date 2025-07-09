@@ -8,7 +8,7 @@ plugins {
 }
 
 allprojects {
-  group = "com.strumenta"
+  group = "com.github.alchitry"
 
   apply(plugin = "com.vanniktech.maven.publish")
 
