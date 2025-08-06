@@ -866,7 +866,7 @@ TokenListDecl(t) ::= "@JvmField @JsName(\"<t.escapedName>$\") public var <t.esca
 RuleContextDecl(r) ::= "@JvmField @JsName(\"<r.escapedName>$\") public var <r.escapedName>: <r.ctxName>? = null"
 RuleContextListDecl(rdecl) ::= "@JvmField @JsName(\"<rdecl.escapedName>$\") public var <rdecl.escapedName>: MutableList\<<rdecl.ctxName>> = ArrayList()"
 
-ContextTokenGetterDecl(t) ::= "public fun <t.escapedName>(): TerminalNode<if(t.optional)>?<endif> = getToken(Tokens.<t.escapedName>, 0)<if(!t.optional)>!!<endif>"
+ContextTokenGetterDecl(t) ::= "public fun <t.escapedName>(): TerminalNode? = getToken(Tokens.<t.escapedName>, 0)"
 ContextTokenListGetterDecl(t) ::= "public fun <t.escapedName>(): List\<TerminalNode> = getTokens(Tokens.<t.escapedName>)"
 
 ContextTokenListIndexedGetterDecl(t) ::= <<
@@ -874,7 +874,7 @@ public fun <t.escapedName>(i: Int): TerminalNode? = getToken(Tokens.<t.escapedNa
 >>
 
 ContextRuleGetterDecl(r) ::= <<
-public fun <r.escapedName>(): <r.ctxName><if(r.optional)>?<endif> = getRuleContext(<r.ctxName>::class, 0)<if(!r.optional)>!!<endif>
+public fun <r.escapedName>(): <r.ctxName>? = getRuleContext(<r.ctxName>::class, 0)
 >>
 
 ContextRuleListGetterDecl(r) ::= <<
